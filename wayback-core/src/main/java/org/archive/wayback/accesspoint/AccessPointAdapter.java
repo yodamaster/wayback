@@ -281,7 +281,13 @@ public class AccessPointAdapter extends AccessPoint {
 
 	@Override
 	public RequestParser getParser() {
-		RequestParser requestParser = config.getRequestParser();
+		RequestParser requestParser = null;
+		
+		if (this.isProxyMode()) {
+			requestParser = config.getProxyParser();
+		} else {
+			requestParser = config.getArchivalParser();
+		}
 		
 		if (requestParser != null) {
 			return requestParser;

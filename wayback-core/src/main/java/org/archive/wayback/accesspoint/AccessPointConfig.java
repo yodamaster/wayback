@@ -13,7 +13,8 @@ public class AccessPointConfig implements BeanNameAware {
 	private List<String> fileIncludePrefixes = null;
 	private List<String> fileExcludePrefixes = null;
 	private WaybackCollection collection = null;
-	private RequestParser requestParser = null;
+	private RequestParser archivalParser = null;
+	private RequestParser proxyParser = null;
 	private String beanName;
 	
 	public Properties getConfigs() {
@@ -48,12 +49,19 @@ public class AccessPointConfig implements BeanNameAware {
 	public void setCollection(WaybackCollection collection) {
 		this.collection = collection;
 	}
+	
 	// Ability to override requestParser per config
-	public RequestParser getRequestParser() {
-		return requestParser;
+	public RequestParser getArchivalParser() {
+		return archivalParser;
 	}
-	public void setRequestParser(RequestParser requestParser) {
-		this.requestParser = requestParser;
+	public void setArchivalParser(RequestParser archivalParser) {
+		this.archivalParser = archivalParser;
+	}
+	public RequestParser getProxyParser() {
+		return proxyParser;
+	}
+	public void setProxyParser(RequestParser proxyParser) {
+		this.proxyParser = proxyParser;
 	}
 	
 }
