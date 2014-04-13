@@ -1,7 +1,7 @@
 == NGWM NEXT STEPS ==
 
 0.2 (week of Nov 28 - Dec 2)
- - fix windows file-pipeline bug (move pipeline state into bdb?)
+ -  fix windows file-pipeline bug (move pipeline state into bdb?)
  - better install/admin instructions (in file and in UI)
  - bundle small default dataset (sample ARC) for immediate use
  - remove extraneous files from build distro bundle
