@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 
+import org.archive.wayback.ResultCollectionURIConverter;
 import org.archive.wayback.ResultURIConverter;
 import org.archive.wayback.core.CaptureSearchResult;
 import org.archive.wayback.core.CaptureSearchResults;
@@ -18,6 +19,7 @@ import org.archive.wayback.core.WaybackRequest;
 import org.archive.wayback.replay.HttpHeaderProcessor;
 import org.archive.wayback.replay.TextDocument;
 import org.archive.wayback.util.Timestamp;
+import org.archive.wayback.webapp.AccessPoint;
 
 public class ArchivalUrlXMLReplayRenderer extends ArchivalUrlJSReplayRenderer {
 
@@ -29,7 +31,7 @@ public class ArchivalUrlXMLReplayRenderer extends ArchivalUrlJSReplayRenderer {
 
     private Pattern isRssPattern = IS_RSS_PATTERN;
     private Pattern rssLinkPattern = RSS_LINK_URL_PATTERN;
-    private ResultURIConverter uriConverterForOverride = null;
+    private ResultCollectionURIConverter uriConverterForOverride = null;
     private String waybackHost = null;
     
     public ArchivalUrlXMLReplayRenderer(
@@ -66,16 +68,17 @@ public class ArchivalUrlXMLReplayRenderer extends ArchivalUrlJSReplayRenderer {
         return rssLinkPattern.pattern();
     }
     
-    public ResultURIConverter getUriConverterForOverride() {
+    public ResultCollectionURIConverter getUriConverterForOverride() {
         return this.uriConverterForOverride;
     }
     
     public void setUriConverterForOverride(
-            ResultURIConverter uriConverterForOverride) {
+            ResultCollectionURIConverter uriConverterForOverride) {
         this.uriConverterForOverride = uriConverterForOverride;
     }
     
-    protected void replaceLinkUrls(String source, StringBuffer target, String resourceTimestamp, String captureTimestamp, ResultURIConverter uriConverter) {
+    protected void replaceLinkUrls(String source, StringBuffer target, String resourceTimestamp, 
+            String captureTimestamp, ResultURIConverter uriConverter, WaybackRequest wbRequest) {
         
         Matcher m = rssLinkPattern.matcher(source);
         
@@ -90,7 +93,9 @@ public class ArchivalUrlXMLReplayRenderer extends ArchivalUrlJSReplayRenderer {
                 
                 replacement.append(RSS_LINK_ELEMENT);
                 
-                replacement.append(uriConverterForOverride.makeReplayURI(captureTimestamp, host));
+                replacement.append(uriConverterForOverride.makeReplayURI(
+                        captureTimestamp, wbRequest.getAccessPoint().getConfigs().getProperty("collId"),
+                            host));
                 
                 m.appendReplacement(target, beforeHost + replacement.toString());
             }   
@@ -100,7 +105,9 @@ public class ArchivalUrlXMLReplayRenderer extends ArchivalUrlJSReplayRenderer {
                 StringBuffer replacement = new StringBuffer();
                 replacement.append(RSS_LINK_ELEMENT);
                 
-                replacement.append(uriConverterForOverride.makeReplayURI(captureTimestamp, host));
+                replacement.append(uriConverterForOverride.makeReplayURI(captureTimestamp, 
+                        wbRequest.getAccessPoint().getConfigs().getProperty("collId"),
+                        host));
                 
                 m.appendReplacement(target, replacement.toString());
             }           
@@ -136,6 +143,8 @@ public class ArchivalUrlXMLReplayRenderer extends ArchivalUrlJSReplayRenderer {
                     continue;
                 }
                 
+                
+                
                 String replacement = uriConverter.makeReplayURI(captureTimestamp, host);
                 
                 m.appendReplacement(target, replacement);
@@ -161,7 +170,7 @@ public class ArchivalUrlXMLReplayRenderer extends ArchivalUrlJSReplayRenderer {
             StringBuilder sb = page.sb;
             StringBuffer replaced = new StringBuffer(sb.length());
             
-            replaceLinkUrls(sb.toString(), replaced, resourceTS, captureTS, uriConverter);
+            replaceLinkUrls(sb.toString(), replaced, resourceTS, captureTS, uriConverter, wbRequest);
             
             StringBuffer replacedAgain = new StringBuffer(replaced.length());
             
@@ -194,5 +203,6 @@ public class ArchivalUrlXMLReplayRenderer extends ArchivalUrlJSReplayRenderer {
         }
 
     }    
-
+     
 }
+
