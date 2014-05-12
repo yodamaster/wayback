@@ -31,7 +31,7 @@ public class ArchivalUrlXMLReplayRenderer extends ArchivalUrlJSReplayRenderer {
 
     private Pattern isRssPattern = IS_RSS_PATTERN;
     private Pattern rssLinkPattern = RSS_LINK_URL_PATTERN;
-    private ResultCollectionURIConverter uriConverterForOverride = null;
+    private ResultCollectionURIConverter rssUriConverter = null;
     private String waybackHost = null;
     
     public ArchivalUrlXMLReplayRenderer(
@@ -68,13 +68,13 @@ public class ArchivalUrlXMLReplayRenderer extends ArchivalUrlJSReplayRenderer {
         return rssLinkPattern.pattern();
     }
     
-    public ResultCollectionURIConverter getUriConverterForOverride() {
-        return this.uriConverterForOverride;
+    public ResultCollectionURIConverter getRssUriConverter() {
+        return this.rssUriConverter;
     }
     
-    public void setUriConverterForOverride(
-            ResultCollectionURIConverter uriConverterForOverride) {
-        this.uriConverterForOverride = uriConverterForOverride;
+    public void setRssUriConverter(
+            ResultCollectionURIConverter rssUriConverter) {
+        this.rssUriConverter = rssUriConverter;
     }
     
     protected void replaceLinkUrls(String source, StringBuffer target, String resourceTimestamp, 
@@ -93,7 +93,7 @@ public class ArchivalUrlXMLReplayRenderer extends ArchivalUrlJSReplayRenderer {
                 
                 replacement.append(RSS_LINK_ELEMENT);
                 
-                replacement.append(uriConverterForOverride.makeReplayURI(
+                replacement.append(rssUriConverter.makeReplayURI(
                         captureTimestamp, wbRequest.getAccessPoint().getConfigs().getProperty("collId"),
                             host));
                 
@@ -105,7 +105,7 @@ public class ArchivalUrlXMLReplayRenderer extends ArchivalUrlJSReplayRenderer {
                 StringBuffer replacement = new StringBuffer();
                 replacement.append(RSS_LINK_ELEMENT);
                 
-                replacement.append(uriConverterForOverride.makeReplayURI(captureTimestamp, 
+                replacement.append(rssUriConverter.makeReplayURI(captureTimestamp, 
                         wbRequest.getAccessPoint().getConfigs().getProperty("collId"),
                         host));
                 
@@ -205,3 +205,4 @@ public class ArchivalUrlXMLReplayRenderer extends ArchivalUrlJSReplayRenderer {
     }    
      
 }
+
